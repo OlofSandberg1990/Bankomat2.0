@@ -8,7 +8,7 @@
             public string Efternamn;                                                    //created a new class with some variables for the users of the bank.
             public string Användarnamn;
             public int Pinkod;
-            public List <Konton> AnvändarkontonList = new List <Konton> ();              //Aslso declared a new list so the Users kan havev uniqe accounts
+            public List<Konton> AnvändarkontonList = new List<Konton>();              //Aslso declared a new list so the Users kan havev uniqe accounts
 
 
             public Användare(string förnamn, string efternamn, string användarnamn, int pinkod)
@@ -29,13 +29,13 @@
         {
 
             public string Kontonamn;                                                //Another class for the bankaccounts
-            public decimal Saldo;    
+            public decimal Saldo;
 
             public Konton(string kontonamn, decimal saldo)
-                {
-                    Kontonamn = kontonamn;                                          //A constructor for the variables above.
-                    Saldo = saldo;
-                }
+            {
+                Kontonamn = kontonamn;                                          //A constructor for the variables above.
+                Saldo = saldo;
+            }
 
         }
 
@@ -104,6 +104,35 @@
 
         }
 
+        static void Meny(string namn)                   // created a new method with one in-parameter called namn. This will get the "förnamn" of the logged in user.
+        {
+            Random rand = new Random();
+            int slumpaNummer = rand.Next(0, 4);         //created a new random, and an int called "slumpaNummer". This will be used to randomize a number between 0 - 3.
+
+            string[] citatArray = new string[4];        //an array with 4 different quotes about economy. 
+
+            citatArray[0] = "”Ränta-på-ränta är världens åttonde underverk.” – Albert Einstein";
+            citatArray[1] = "“Köp billigt, sälj dyrt!” – Benjamin Graham";
+            citatArray[2] = "”Riktig koll på sin ekonomi har man bara när man inte behöver det. Tack och lov sker detta inte allt för ofta.” - Okänd";
+            citatArray[3] = "”Det finns ett sätt att lösa samtliga ekonomiska problem: att göra självgodheten skattepliktig.” - Jacques Tati";
+
+            Console.Clear();
+
+
+            Console.WriteLine("=======Bankomat=======");
+            Console.WriteLine();
+            Console.WriteLine("Välkommen " + namn);             //Shows a welcome-message with the users firstname. 
+
+            Console.WriteLine("1, Se dina konton och saldo");
+            Console.WriteLine("2, Överföring mellan konton");   //A simple menu with 5 different options.
+            Console.WriteLine("3, Sätt in pengar");
+            Console.WriteLine("4, Ta ut pengar");
+            Console.WriteLine("5, Logga ut");
+            Console.WriteLine();
+            Console.WriteLine(citatArray[slumpaNummer]);        //In the bottom of the menu, one of the four economy-quotes from the citatArray will be shown.
+
+
+        }
 
         static void Main(string[] args)
         {
@@ -141,6 +170,8 @@
             kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //accessing the properties for the uniqe användare (in this case användare4).
 
             var tillfälligAnvändare = LoggaIn(kundregisterDictionary);
+            Meny(tillfälligAnvändare.Förnamn);
+            
 
         }
 
