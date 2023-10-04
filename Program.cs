@@ -39,6 +39,71 @@
 
         }
 
+        public static Användare LoggaIn(Dictionary<string, Användare> tillfälligtDictionary)            //created a method to handle a user login and return a logged in user.
+        {
+
+
+            while (true)
+            {
+
+
+                Console.WriteLine("Ange användarnamn");
+                string inputAnvändarnamn = Console.ReadLine();
+
+                if (tillfälligtDictionary.ContainsKey(inputAnvändarnamn))                               //if the dictionary has a key that contains a valid username, it gets
+                {                                                                                       //stored in the temporary variable "tillfälligtAnvändarnamn"
+                    var tillfälligtAnvändarnamn = tillfälligtDictionary[inputAnvändarnamn];
+                    int antalFösök = 0;
+                    while (true)
+                    {
+
+                        Console.WriteLine("Ange din 4-siffriga pinkod");
+                        int inputPinkod = 0;
+
+                        try
+                        {
+                            inputPinkod = int.Parse(Console.ReadLine());                                //Try to convert the inputPinkod to a valid int. It it's not valid an error-message
+                        }                                                                           //occur, but the program will continue to run.
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Fel inmatning, pinkoden måste vara 4 siffror");
+
+                        }
+
+
+                        if (tillfälligtAnvändarnamn.Pinkod == inputPinkod)                          //if the pinKod of tillfälligAnvändare is equal to the inputPinkod the method will 
+                        {                                                                           //return the information of tillfälligtAnvändarnamn...
+                            Console.WriteLine("Inloggning lyckades!");
+                            Console.ReadKey();
+                            return tillfälligtAnvändarnamn;
+                        } else
+                        {
+                            antalFösök++;
+                            Console.WriteLine("Fel pinkod");                                           //...else it will show that the user tried the wrong pincode and the number
+                            Console.WriteLine($"Försök {antalFösök}/3");                                //of tries will be shown.
+                            Console.WriteLine();
+                        }
+
+                        if (antalFösök == 3)
+                        {
+                            Console.WriteLine("Antal försök har överskridits, programmet avslutas");    //If the user tries more than three times, the program will be shut down.
+                            Console.ReadKey();
+                            Environment.Exit(0);
+                        }
+
+
+
+                    }
+
+                } else
+                {
+                    Console.WriteLine("Ingen användare kunde hittas");                  //And if the användarnamn could not be found, the program will just continue to run
+                }                                                                       //since our Bool is set to "true".
+            }
+
+
+        }
+
 
         static void Main(string[] args)
         {
@@ -74,6 +139,12 @@
             kundregisterDictionary.Add(användare3.Användarnamn, användare3);
             kundregisterDictionary.Add(användare4.Användarnamn, användare4);                                        //I added the users to the dictionary, with "användarnamn" as a key for
             kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //accessing the properties for the uniqe användare (in this case användare4).
+
+            var tillfälligAnvändare = LoggaIn(kundregisterDictionary);
+
         }
+
+       
+
     }
 }
