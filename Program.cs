@@ -218,7 +218,72 @@
 
         }
 
+        static void Uttag(Användare tillfälligAnvändare)                        //created another method for Uttag. Copied pretty much from my code Isättning above.
+        {
 
+            Console.WriteLine("=======Uttag=======");
+            Console.WriteLine();
+            Console.WriteLine("Hur mycket pengar vill du ta ut?");
+
+            decimal inputUttag = 0;
+
+            try
+            {
+                inputUttag = decimal.Parse(Console.ReadLine());                //Another try/catch to make sure the input is a valid number.
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Felaktig inmatning");                            
+                Console.ReadKey();
+                return;
+            }
+
+
+                Console.WriteLine("Från vilket konto vill du ta ut pengar?");
+                       
+                int kontoIndex = 0;
+                int inputVal = 0;
+            foreach (var konto in tillfälligAnvändare.AnvändarkontonList)
+            {
+                kontoIndex++;
+                Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");              //Using the forloop once again to show the bankaccounts
+            }
+
+            try
+            {
+                inputVal = int.Parse(Console.ReadKey().KeyChar.ToString());
+                Console.Clear();
+                var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                       
+
+                if (valtKonto.Saldo > inputUttag)                                                                  //An if-statement to make sure the balance of the account is more than the
+                {                                                                                                  //desired account.
+
+                    valtKonto.Saldo -= inputUttag;
+                    Console.WriteLine("Uttag lyckades");
+                    Console.WriteLine($"Nytt lado för {valtKonto.Kontonamn} är {valtKonto.Saldo}kr.");
+                    Console.WriteLine();
+                    Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+                    Console.ReadKey();
+
+                } else
+                {
+                    Console.WriteLine("För lite pengar på kontot");
+                    Console.WriteLine();
+                    Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Felaktig inmatning");
+                Console.ReadKey();
+                return;
+
+            }
+
+
+        }
         
 
         static void Main(string[] args)
@@ -256,8 +321,10 @@
             kundregisterDictionary.Add(användare4.Användarnamn, användare4);                                        //I added the users to the dictionary, with "användarnamn" as a key for
             kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //accessing the properties for the uniqe användare (in this case användare4).
 
-            var tillfälligAnvändare = LoggaIn(kundregisterDictionary);
-            Meny(tillfälligAnvändare.Förnamn);
+            
+
+            //var tillfälligAnvändare = LoggaIn(kundregisterDictionary);
+            //Meny(tillfälligAnvändare.Förnamn);
 
             
         }
