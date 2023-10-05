@@ -134,6 +134,93 @@
 
         }
 
+       
+        
+        static void KontonOchSaldo(Användare tillfälligAnvändare)                       //Another method to show the users bank-accounts.
+        {
+            Console.WriteLine("=======Konton och saldo =======");
+            Console.WriteLine();
+                foreach (var konto in tillfälligAnvändare.AnvändarkontonList)                   //used a foreach-loop to print out the name of the account and the balance (Kontonamn and Saldo).
+                {
+
+                    Console.WriteLine(konto.Kontonamn + "    " + +konto.Saldo + "kr");
+                }
+            Console.WriteLine();
+            Console.WriteLine("Tryck på enter för att gå tillbaka till huvudmenyn");
+            Console.ReadKey();                                                                  //A readkey to stop the program followed by console.clear to clean the console before going back to our
+            Console.Clear();                                                                    //main method
+
+
+        }
+
+        static void Insättning(Användare tillfälligAnvändare)
+        {
+            Console.WriteLine("=======Instänning=======");
+            Console.WriteLine();
+            Console.WriteLine("Hur mycket pengar vill du sätta in?");
+            decimal InputInsättning = 0;
+            
+            try
+            {
+                InputInsättning = decimal.Parse(Console.ReadLine());                //Asking the user to insert the amount he/she wants to deposit.
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Felaktig inmatning");                            //If the insert is wrong (not a decimal) this message will be shown.
+                Console.ReadKey();
+                return;
+            }
+
+            if (InputInsättning > 0)                                                    //Checking so the user dosen't try to deposit a negative amount.
+            {
+                
+                int kontoIndex = 0;
+                Console.WriteLine("Till vilket konton vill du sätta in pengarna?");     
+                
+                foreach (var konto in tillfälligAnvändare.AnvändarkontonList)                   
+                {
+                    kontoIndex++;
+                    Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");              //Usen a foreach-loop to show the account for the user
+                }
+                bool kontoValBool = true;               
+                while (kontoValBool)
+                {
+                                   
+                    try
+                    {
+                        int inputVal = int.Parse(Console.ReadKey().KeyChar.ToString());                         //Making the variable to a KeyChar so the user just inserts the account-number
+                        Console.Clear();                                                                        //Without pressing enter.
+                        
+                        var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                   //The selected konto gets stored in the variable "valtKonto". The -1 there since                        
+                        Console.WriteLine($"{InputInsättning}kr sattes in på ditt {valtKonto.Kontonamn}");      //the index of the list starts on 0 and not 1.
+
+                        valtKonto.Saldo += InputInsättning;                                                     //the "InputInstättnings gets added to the "valtKonto"-saldo.
+                        Console.WriteLine("Nytt saldo : " + valtKonto.Saldo);
+                        Console.WriteLine();
+                        Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+                        Console.ReadKey();
+
+                        kontoValBool = false;
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Konto kunde inte hittas, försök igen");
+                    }
+                }
+
+            } else
+            {
+                Console.WriteLine("Kan inte sätta in ett negativt belopp");
+                Console.ReadKey();
+            }
+
+                
+
+        }
+
+
+        
+
         static void Main(string[] args)
         {
             Användare användare1 = new Användare("Olof", "Sandberg", "olsa", 1111);                 //created 5 new users with new bankaccounts.
@@ -171,8 +258,8 @@
 
             var tillfälligAnvändare = LoggaIn(kundregisterDictionary);
             Meny(tillfälligAnvändare.Förnamn);
-            
 
+            
         }
 
        
