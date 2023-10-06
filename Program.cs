@@ -1,4 +1,6 @@
-﻿namespace Bankomat2._0
+﻿using static Bankomat2._0.Program;
+
+namespace Bankomat2._0
 {
     internal class Program
     {
@@ -134,8 +136,7 @@
 
         }
 
-       
-        
+
         static void KontonOchSaldo(Användare tillfälligAnvändare)                       //Another method to show the users bank-accounts.
         {
             Console.WriteLine("=======Konton och saldo =======");
@@ -218,6 +219,35 @@
 
         }
 
+        static void BeräftaPinkod(Användare tillfälligAnvändare)
+        {
+            int inputPinkod = 0;
+            Console.WriteLine("Bekräfta din pinkod : ");
+            while (tillfälligAnvändare.Pinkod != inputPinkod)                   //if the inputPinkod is the same as tillfälligAnvädare.pinkod the bool will return false.
+            {
+                try
+                {
+                    inputPinkod = int.Parse(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Felaktig inmatning, försök igen");       //If the input pinkod isn't a valid int, the bool will run again from the begining
+                    continue;
+                }
+
+
+                if (inputPinkod == tillfälligAnvändare.Pinkod)
+                {
+                    Console.WriteLine("Pinkod korrekt");                        //if the inputPinkod is equal to tillfälligAnvändare.Pinkod the method will exit.
+                    return;
+                }
+                Console.WriteLine("Fel pinkod, försök igen");
+
+            }
+
+
+        }
+
         static void Uttag(Användare tillfälligAnvändare)                        //created another method for Uttag. Copied pretty much from my code Isättning above.
         {
 
@@ -256,9 +286,12 @@
                 var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                       
 
                 if (valtKonto.Saldo > inputUttag)                                                                  //An if-statement to make sure the balance of the account is more than the
-                {                                                                                                  //desired account.
+                {
+
+                    BeräftaPinkod(tillfälligAnvändare);
 
                     valtKonto.Saldo -= inputUttag;
+                    
                     Console.WriteLine("Uttag lyckades");
                     Console.WriteLine($"Nytt lado för {valtKonto.Kontonamn} är {valtKonto.Saldo}kr.");
                     Console.WriteLine();
@@ -284,6 +317,123 @@
 
 
         }
+
+        static void ÖverföringMellanKonton (Användare tillfälligAnvändare)      //created a new method för transfer between accounts. Copied much of the code from "Insättning" and 
+        {                                                                       //"Uttag"
+
+            Console.WriteLine("=======Uttag=======");
+            Console.WriteLine();
+            Console.WriteLine("Från vilket konto vill du föra över pengar?");
+
+            int kontoIndex = 0;
+            
+            foreach (var konto in tillfälligAnvändare.AnvändarkontonList)
+            {
+                kontoIndex++;
+                Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");              
+            }
+
+            int inputFrånKonto = 0;
+
+            bool inputBool = true;
+            while (inputBool)
+            {
+                try
+                {
+                    inputFrånKonto = int.Parse(Console.ReadKey().KeyChar.ToString());
+                    Console.Clear();
+                    inputBool = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Felaktig inmatning, försök igen");
+                    Console.ReadKey();
+                    Console.Clear();
+                   
+
+                }
+            }
+            var valtKontoUttag = tillfälligAnvändare.AnvändarkontonList[inputFrånKonto - 1];
+
+            Console.WriteLine("Hur mycket pengar vill du föra över?");
+
+            decimal överföringSumma = 0;
+
+            bool giltligSummaBool = true;
+            while (giltligSummaBool)
+            {
+                try
+                {
+                    överföringSumma = decimal.Parse(Console.ReadLine());
+                    
+                    giltligSummaBool = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Ogiltlig inmatning");
+
+                }
+
+
+
+            }
+
+            if (överföringSumma < valtKontoUttag.Saldo)
+            {
+                valtKontoUttag.Saldo -= överföringSumma;                        //This time i stored the value of the withdrawal in the variable "överföringSumma" and subtracted it from the
+                                                                                //account the user wanted...
+
+            } else
+            {
+                Console.WriteLine("För lite pengar på kontot");
+                return;
+            }
+
+
+            Console.WriteLine("Till vilket konto vill du föra över?");
+
+            kontoIndex = 0;
+
+            foreach (var konto in tillfälligAnvändare.AnvändarkontonList)
+            {
+                kontoIndex++;
+                Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");
+            }
+
+            int inputFrånKonto2 = 0;
+
+            bool inputBool2 = true;
+            while (inputBool2)
+            {
+                try
+                {
+                    inputFrånKonto2 = int.Parse(Console.ReadKey().KeyChar.ToString());
+                    Console.Clear();
+                    inputBool2 = false;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Felaktig inmatning, försök igen");
+                    Console.ReadKey();
+                    Console.Clear();
+
+
+                }
+            }
+            var valtkontoInsättning = tillfälligAnvändare.AnvändarkontonList[inputFrånKonto2 - 1];
+
+            valtkontoInsättning.Saldo += överföringSumma;                                                                  //...And later on added it to the account the user wants it to be deposited.        
+
+            Console.WriteLine($"Nytt saldo : {valtKontoUttag.Kontonamn}     {valtKontoUttag.Saldo}");
+            Console.WriteLine($"Nytt saldo : {valtkontoInsättning.Kontonamn}     {valtkontoInsättning.Saldo}");
+            Console.WriteLine();
+            Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+            Console.ReadLine();
+            Console.Clear();
+
+
+        }
+
         
 
         static void Main(string[] args)
@@ -321,12 +471,58 @@
             kundregisterDictionary.Add(användare4.Användarnamn, användare4);                                        //I added the users to the dictionary, with "användarnamn" as a key for
             kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //accessing the properties for the uniqe användare (in this case användare4).
 
-            
+            bool körProgram = true;
+            while (körProgram)
+            {
+                var tillfälligAnvändare = LoggaIn(kundregisterDictionary);                          //created 2 while-loops and 2 bools. One loop to run the program and one for when you're logged in.
+                bool inloggad = true;
 
-            //var tillfälligAnvändare = LoggaIn(kundregisterDictionary);
-            //Meny(tillfälligAnvändare.Förnamn);
+                while (inloggad)
+                {
 
-            
+                    
+                    Meny(tillfälligAnvändare.Förnamn);
+
+                    char val = Console.ReadKey().KeyChar;
+                    Console.Clear();
+
+                    switch (val)
+                    {
+                        case '1':
+                            KontonOchSaldo(tillfälligAnvändare);
+                            break;
+                        case '2':
+                            ÖverföringMellanKonton(tillfälligAnvändare);                            //A switch-case to call the different methods.
+                            break;
+                        case '3':
+                            Insättning(tillfälligAnvändare);
+                            break;
+                        case '4':
+                            Uttag(tillfälligAnvändare);
+                            break;
+                        case '5':
+                            Console.WriteLine("Tack för ditt besök, du loggas nu ut");
+                            Console.ReadKey();
+                            Console.Clear();
+                            inloggad = false;
+                            break;
+                        default:
+                            Console.WriteLine("Ogiltligt val, försök igen");
+                            
+                            break;
+                    }
+
+                }
+
+
+
+            }
+
+
+
+
+
+
         }
 
        
