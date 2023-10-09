@@ -1,4 +1,6 @@
-﻿using static Bankomat2._0.Program;
+﻿using System.Runtime.CompilerServices;
+using System.Threading.Channels;
+using static Bankomat2._0.Program;
 
 namespace Bankomat2._0
 {
@@ -106,6 +108,58 @@ namespace Bankomat2._0
 
         }
 
+        static void VisaKonton(Användare tillfälligAnvändare)                                       //created a method to show the user their account.
+        {
+            int kontoIndex = 0;
+
+            foreach (var konton in tillfälligAnvändare.AnvändarkontonList)                          //using a foreach-loop the write ut the accounts. Also an int called kontoIndex to get a number for each account.
+            {
+                kontoIndex++;
+
+                Console.WriteLine($"{kontoIndex}, {konton.Kontonamn}        {konton.Saldo}kr");
+
+            }
+
+
+
+        }
+
+        public static decimal KollaDecimalInput()                               //created a method to make sure a decimal is written is a correct format and is not a negative number 
+        {
+
+            bool fortsättLoop = true;
+            decimal värdeAttKolla = 0;
+            while (fortsättLoop)                                         //a while-loop so you can try again in the input is not a valid decimal          
+            {
+                
+                try
+                {
+                    värdeAttKolla = Convert.ToDecimal(Console.ReadLine());          //try to convert the number input from the user to a decimal
+                    
+
+                    if (värdeAttKolla > 0)                                          // If it is correct, check so the input is a positive number
+                    {
+
+                        fortsättLoop = false;                                       //If it is, the bool will return false, and the value of värdeAttKolla will be returned from the method.
+                    } else
+                    {
+                        Console.WriteLine("Beloppet kan inte vara negativt, försök igen");      //If the number is negative, the loop will continue to execute.
+                    }
+
+
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Felaktig inmatning, försök igen");           //A message will be written if the convert fails, and the loop will continue to execute.
+                    
+                    
+                }
+                
+            }
+            return värdeAttKolla;
+
+        }
+
         static void Meny(string namn)                   // created a new method with one in-parameter called namn. This will get the "förnamn" of the logged in user.
         {
             Random rand = new Random();
@@ -141,11 +195,8 @@ namespace Bankomat2._0
         {
             Console.WriteLine("=======Konton och saldo =======");
             Console.WriteLine();
-                foreach (var konto in tillfälligAnvändare.AnvändarkontonList)                   //used a foreach-loop to print out the name of the account and the balance (Kontonamn and Saldo).
-                {
+            VisaKonton(tillfälligAnvändare);
 
-                    Console.WriteLine(konto.Kontonamn + "    " + +konto.Saldo + "kr");
-                }
             Console.WriteLine();
             Console.WriteLine("Tryck på enter för att gå tillbaka till huvudmenyn");
             Console.ReadKey();                                                                  //A readkey to stop the program followed by console.clear to clean the console before going back to our
@@ -158,64 +209,43 @@ namespace Bankomat2._0
         {
             Console.WriteLine("=======Instänning=======");
             Console.WriteLine();
-            Console.WriteLine("Hur mycket pengar vill du sätta in?");
-            decimal InputInsättning = 0;
-            
-            try
-            {
-                InputInsättning = decimal.Parse(Console.ReadLine());                //Asking the user to insert the amount he/she wants to deposit.
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Felaktig inmatning");                            //If the insert is wrong (not a decimal) this message will be shown.
-                Console.ReadKey();
-                return;
-            }
+            Console.WriteLine("Hur mycket pengar vill du sätta in?");                   //Asking the user to insert the amount he/she wants to deposit.
 
-            if (InputInsättning > 0)                                                    //Checking so the user dosen't try to deposit a negative amount.
+
+            decimal inputInsättning = KollaDecimalInput();                              //declare a new decimal, and run it through the KollaDecimalInput-method.
+
+
+            Console.WriteLine("Till vilket konto vill du sätta in pengarna?");
+
+            bool kontoValBool = true;
+            VisaKonton(tillfälligAnvändare);                                    //show a list of the users bankaccounts.
+            int inputVal = 0;                                                   //declaring a new int outside the while-loop.
+            while (kontoValBool)
             {
-                
-                int kontoIndex = 0;
-                Console.WriteLine("Till vilket konton vill du sätta in pengarna?");     
-                
-                foreach (var konto in tillfälligAnvändare.AnvändarkontonList)                   
+                                
+                try
                 {
-                    kontoIndex++;
-                    Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");              //Usen a foreach-loop to show the account for the user
+                    inputVal = Convert.ToInt32(Console.ReadLine());                                         //The selected account gets stored in the variable "valtKonto". The -1 there since  
+                    var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                   //the index of the list starts on 0 and not 1.
+                    Console.WriteLine($"{inputInsättning}kr sattes in på {valtKonto.Kontonamn}");           
+
+                    valtKonto.Saldo += inputInsättning;                                                     //Adding the deposit to the users choice of account.
+
+                    Console.WriteLine("Nytt saldo : " + valtKonto.Saldo);
+                    Console.WriteLine();
+                    Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+                    Console.ReadKey();
+                    Console.Clear();
+                    kontoValBool = false;
                 }
-                bool kontoValBool = true;               
-                while (kontoValBool)
+                catch (Exception)
                 {
-                                   
-                    try
-                    {
-                        int inputVal = int.Parse(Console.ReadKey().KeyChar.ToString());                         //Making the variable to a KeyChar so the user just inserts the account-number
-                        Console.Clear();                                                                        //Without pressing enter.
-                        
-                        var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                   //The selected konto gets stored in the variable "valtKonto". The -1 there since                        
-                        Console.WriteLine($"{InputInsättning}kr sattes in på ditt {valtKonto.Kontonamn}");      //the index of the list starts on 0 and not 1.
-
-                        valtKonto.Saldo += InputInsättning;                                                     //the "InputInstättnings gets added to the "valtKonto"-saldo.
-                        Console.WriteLine("Nytt saldo : " + valtKonto.Saldo);
-                        Console.WriteLine();
-                        Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
-                        Console.ReadKey();
-
-                        kontoValBool = false;
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("Konto kunde inte hittas, försök igen");
-                    }
+                    Console.WriteLine("Felaktig inmatning, försök igen");                                   //If the inputVal isn't a valid choice, this message will be printed and the user needs to try again
+                    
                 }
 
-            } else
-            {
-                Console.WriteLine("Kan inte sätta in ett negativt belopp");
-                Console.ReadKey();
             }
 
-                
 
         }
 
@@ -255,83 +285,74 @@ namespace Bankomat2._0
             Console.WriteLine();
             Console.WriteLine("Hur mycket pengar vill du ta ut?");
 
-            decimal inputUttag = 0;
+            decimal inputUttag = KollaDecimalInput();                               //declare a new decimal, and run it through the KollaDecimalInput-method.
 
-            try
+
+            Console.WriteLine("Från vilket konto vill du ta ut pengar?");
+                        
+            VisaKonton(tillfälligAnvändare);
+            int inputVal = 0;
+            bool taUtPengar = true;
+
+            while (taUtPengar)
             {
-                inputUttag = decimal.Parse(Console.ReadLine());                //Another try/catch to make sure the input is a valid number.
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Felaktig inmatning");                            
-                Console.ReadKey();
-                return;
-            }
 
-
-                Console.WriteLine("Från vilket konto vill du ta ut pengar?");
-                       
-                int kontoIndex = 0;
-                int inputVal = 0;
-            foreach (var konto in tillfälligAnvändare.AnvändarkontonList)
-            {
-                kontoIndex++;
-                Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");              //Using the forloop once again to show the bankaccounts
-            }
-
-            try
-            {
-                inputVal = int.Parse(Console.ReadKey().KeyChar.ToString());
-                Console.Clear();
-                var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                       
-
-                if (valtKonto.Saldo > inputUttag)                                                                  //An if-statement to make sure the balance of the account is more than the
+                try
                 {
+                    inputVal = Convert.ToInt32(Console.ReadLine());
+                    var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];
 
-                    BeräftaPinkod(tillfälligAnvändare);
+                    if (valtKonto.Saldo > inputUttag)                                                                  //An if-statement to make sure the balance of the account is more than the
+                    {
 
-                    valtKonto.Saldo -= inputUttag;
-                    
-                    Console.WriteLine("Uttag lyckades");
-                    Console.WriteLine($"Nytt lado för {valtKonto.Kontonamn} är {valtKonto.Saldo}kr.");
-                    Console.WriteLine();
-                    Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
-                    Console.ReadKey();
+                        BeräftaPinkod(tillfälligAnvändare);                                                 //if the balance of the chosen user account is more than the inputUttag, the mehod for confirm your pincode will be executed.
 
-                } else
-                {
-                    Console.WriteLine("För lite pengar på kontot");
-                    Console.WriteLine();
-                    Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
-                    Console.ReadKey();
-                    Console.Clear();
+                        valtKonto.Saldo -= inputUttag;                                                      //the withdrawal will be made from the chosen account. 
+
+                        Console.WriteLine("Uttag lyckades");
+                        Console.WriteLine($"Nytt lado för {valtKonto.Kontonamn} är {valtKonto.Saldo}kr.");
+                        Console.WriteLine();
+                        Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+                        Console.ReadKey();
+                        Console.Clear();
+                        taUtPengar = false;
+
+                    } else
+                    {
+                        Console.WriteLine("För lite pengar på kontot");
+                        Console.WriteLine();
+                        Console.WriteLine("Tryck på enter för att komma tillbaka till huvudmenyn");
+                        Console.ReadKey();
+                        taUtPengar = false;
+                        Console.Clear();
+                        
+                        
+                    }
                 }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Felaktig inmatning");
-                Console.ReadKey();
-                return;
+                catch (Exception)
+                {
+                    Console.WriteLine("Felaktig inmatning, ange en giltlig siffra");
+
+
+                }
 
             }
+
+
 
 
         }
 
-        static void ÖverföringMellanKonton (Användare tillfälligAnvändare)      //created a new method för transfer between accounts. Copied much of the code from "Insättning" and 
+        static void ÖverföringMellanKonton(Användare tillfälligAnvändare)      //created a new method för transfer between accounts. Copied much of the code from "Insättning" and 
         {                                                                       //"Uttag"
 
             Console.WriteLine("=======Uttag=======");
             Console.WriteLine();
             Console.WriteLine("Från vilket konto vill du föra över pengar?");
 
-            int kontoIndex = 0;
-            
-            foreach (var konto in tillfälligAnvändare.AnvändarkontonList)
-            {
-                kontoIndex++;
-                Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");              
-            }
+
+
+            VisaKonton(tillfälligAnvändare);
 
             int inputFrånKonto = 0;
 
@@ -349,7 +370,7 @@ namespace Bankomat2._0
                     Console.WriteLine("Felaktig inmatning, försök igen");
                     Console.ReadKey();
                     Console.Clear();
-                   
+
 
                 }
             }
@@ -365,7 +386,7 @@ namespace Bankomat2._0
                 try
                 {
                     överföringSumma = decimal.Parse(Console.ReadLine());
-                    
+
                     giltligSummaBool = false;
                 }
                 catch (Exception)
@@ -392,13 +413,7 @@ namespace Bankomat2._0
 
             Console.WriteLine("Till vilket konto vill du föra över?");
 
-            kontoIndex = 0;
-
-            foreach (var konto in tillfälligAnvändare.AnvändarkontonList)
-            {
-                kontoIndex++;
-                Console.WriteLine(kontoIndex + ", " + konto.Kontonamn + "    " + +konto.Saldo + "kr");
-            }
+            VisaKonton(tillfälligAnvändare);
 
             int inputFrånKonto2 = 0;
 
@@ -434,7 +449,7 @@ namespace Bankomat2._0
 
         }
 
-        
+
 
         static void Main(string[] args)
         {
@@ -471,6 +486,9 @@ namespace Bankomat2._0
             kundregisterDictionary.Add(användare4.Användarnamn, användare4);                                        //I added the users to the dictionary, with "användarnamn" as a key for
             kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //accessing the properties for the uniqe användare (in this case användare4).
 
+
+
+
             bool körProgram = true;
             while (körProgram)
             {
@@ -480,7 +498,7 @@ namespace Bankomat2._0
                 while (inloggad)
                 {
 
-                    
+
                     Meny(tillfälligAnvändare.Förnamn);
 
                     char val = Console.ReadKey().KeyChar;
@@ -508,7 +526,7 @@ namespace Bankomat2._0
                             break;
                         default:
                             Console.WriteLine("Ogiltligt val, försök igen");
-                            
+
                             break;
                     }
 
@@ -525,7 +543,7 @@ namespace Bankomat2._0
 
         }
 
-       
+
 
     }
 }
