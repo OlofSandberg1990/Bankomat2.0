@@ -351,25 +351,28 @@ namespace Bankomat2._0
             Console.WriteLine("Från vilket konto vill du föra över pengar?");
 
 
-
-            VisaKonton(tillfälligAnvändare);
+            VisaKonton(tillfälligAnvändare);                                    //Show the menu of bankaccounts.
 
             int inputFrånKonto = 0;
 
             bool inputBool = true;
-            while (inputBool)
+            while (inputBool)                                                   //A while-loop that runs until the user inserts a valid int as a choice for the menu.
             {
                 try
                 {
-                    inputFrånKonto = int.Parse(Console.ReadKey().KeyChar.ToString());
-                    Console.Clear();
+                    inputFrånKonto = Convert.ToInt32(Console.ReadLine());
+                    if (inputFrånKonto > tillfälligAnvändare.AnvändarkontonList.Count || inputFrånKonto == 0)           //controlling so the number inserted is not bigger than the number of accounts. Also checks so the users input isn't zero.
+                    {
+                        Console.WriteLine("Konto hittades inte. Vänligen ange ett giltigt alternativ");
+                        continue;
+                    }
+
                     inputBool = false;
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Felaktig inmatning, försök igen");
-                    Console.ReadKey();
-                    Console.Clear();
+                                      
 
 
                 }
@@ -378,35 +381,16 @@ namespace Bankomat2._0
 
             Console.WriteLine("Hur mycket pengar vill du föra över?");
 
-            decimal överföringSumma = 0;
+            decimal överföringSumma = KollaDecimalInput();                              //delcaring a new decimal and run in through the KollaDecimalInput-method. 
 
-            bool giltligSummaBool = true;
-            while (giltligSummaBool)
+            if (överföringSumma < valtKontoUttag.Saldo)                                 //controlling so the balance of the account is greater than the amount the user wants to withdraw from the account. 
             {
-                try
-                {
-                    överföringSumma = decimal.Parse(Console.ReadLine());
-
-                    giltligSummaBool = false;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Ogiltlig inmatning");
-
-                }
-
-
-
-            }
-
-            if (överföringSumma < valtKontoUttag.Saldo)
-            {
-                valtKontoUttag.Saldo -= överföringSumma;                        //This time i stored the value of the withdrawal in the variable "överföringSumma" and subtracted it from the
-                                                                                //account the user wanted...
+                valtKontoUttag.Saldo -= överföringSumma;                                //Subtracting the wished withdraw from the accunt.
 
             } else
             {
-                Console.WriteLine("För lite pengar på kontot");
+                Console.WriteLine("För lite pengar på kontot");                         //If the account dosen't have enough balance, the method will be closed and the user will return to the menu.
+                Console.ReadKey();
                 return;
             }
 
@@ -420,24 +404,29 @@ namespace Bankomat2._0
             bool inputBool2 = true;
             while (inputBool2)
             {
+ 
                 try
                 {
-                    inputFrånKonto2 = int.Parse(Console.ReadKey().KeyChar.ToString());
-                    Console.Clear();
+                    inputFrånKonto2 = Convert.ToInt32(Console.ReadLine());
+                    if (inputFrånKonto2 > tillfälligAnvändare.AnvändarkontonList.Count || inputFrånKonto2 == 0)
+                    {
+                        Console.WriteLine("Konton hittades inte, vänigen ange ett giltigt alternativ");
+                        continue;
+                    }  
+                    
                     inputBool2 = false;
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Felaktig inmatning, försök igen");
-                    Console.ReadKey();
-                    Console.Clear();
+
 
 
                 }
             }
             var valtkontoInsättning = tillfälligAnvändare.AnvändarkontonList[inputFrånKonto2 - 1];
 
-            valtkontoInsättning.Saldo += överföringSumma;                                                                  //...And later on added it to the account the user wants it to be deposited.        
+            valtkontoInsättning.Saldo += överföringSumma;                                                                  //And the last thing in this method the amount is added to the bankaccount that the user has chosen.
 
             Console.WriteLine($"Nytt saldo : {valtKontoUttag.Kontonamn}     {valtKontoUttag.Saldo}");
             Console.WriteLine($"Nytt saldo : {valtkontoInsättning.Kontonamn}     {valtkontoInsättning.Saldo}");
@@ -526,6 +515,7 @@ namespace Bankomat2._0
                             break;
                         default:
                             Console.WriteLine("Ogiltligt val, försök igen");
+                            Console.ReadKey();
 
                             break;
                     }
