@@ -12,7 +12,8 @@ namespace Bankomat2._0
             public string Efternamn;                                                    //created a new class with some variables for the users of the bank.
             public string Användarnamn;
             public int Pinkod;
-            public List<Konton> AnvändarkontonList = new List<Konton>();              //Aslso declared a new list so the Users kan havev uniqe accounts
+            public List<Konton> AnvändarkontonList = new List<Konton>();              //Also declared a new list so the Users kan havev uniqe accounts. The list is designed to store instances of the Konton class.
+                                                                                      
 
 
             public Användare(string förnamn, string efternamn, string användarnamn, int pinkod)
@@ -25,7 +26,7 @@ namespace Bankomat2._0
 
 
             }
-
+           
 
         }
 
@@ -51,7 +52,7 @@ namespace Bankomat2._0
             {
 
 
-                Console.WriteLine("Ange användarnamn");
+                Console.WriteLine("Ange användarnamn : ");
                 string inputAnvändarnamn = Console.ReadLine();
 
                 if (tillfälligtDictionary.ContainsKey(inputAnvändarnamn))                               //if the dictionary has a key that contains a valid username, it gets
@@ -61,7 +62,7 @@ namespace Bankomat2._0
                     while (true)
                     {
 
-                        Console.WriteLine("Ange din 4-siffriga pinkod");
+                        Console.WriteLine("Ange din 4-siffriga pinkod : ");
                         int inputPinkod = 0;
 
                         try
@@ -108,7 +109,7 @@ namespace Bankomat2._0
 
         }
 
-        static void VisaKonton(Användare tillfälligAnvändare)                                       //created a method to show the user their account.
+        static void VisaKonton(Användare tillfälligAnvändare)                                       //created a method to show the user their accounts.
         {
             int kontoIndex = 0;
 
@@ -129,7 +130,7 @@ namespace Bankomat2._0
 
             bool fortsättLoop = true;
             decimal värdeAttKolla = 0;
-            while (fortsättLoop)                                         //a while-loop so you can try again in the input is not a valid decimal          
+            while (fortsättLoop)                                         //a while-loop so you can try again if the input is not a valid decimal          
             {
                 
                 try
@@ -225,7 +226,7 @@ namespace Bankomat2._0
                                 
                 try
                 {
-                    inputVal = Convert.ToInt32(Console.ReadLine());                                         //The selected account gets stored in the variable "valtKonto". The -1 there since  
+                    inputVal = Convert.ToInt32(Console.ReadLine());                                         //The selected account gets stored in the variable "valtKonto". The -1 is there since  
                     var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];                   //the index of the list starts on 0 and not 1.
                     Console.WriteLine($"{inputInsättning}kr sattes in på {valtKonto.Kontonamn}");           
 
@@ -302,7 +303,7 @@ namespace Bankomat2._0
                     inputVal = Convert.ToInt32(Console.ReadLine());
                     var valtKonto = tillfälligAnvändare.AnvändarkontonList[inputVal - 1];
 
-                    if (valtKonto.Saldo > inputUttag)                                                                  //An if-statement to make sure the balance of the account is more than the
+                    if (valtKonto.Saldo > inputUttag)                                                                  //An if-statement to make sure the balance of the account is more than the amount the users wants to withdraw.
                     {
 
                         BeräftaPinkod(tillfälligAnvändare);                                                 //if the balance of the chosen user account is more than the inputUttag, the mehod for confirm your pincode will be executed.
@@ -402,7 +403,7 @@ namespace Bankomat2._0
             int inputFrånKonto2 = 0;
 
             bool inputBool2 = true;
-            while (inputBool2)
+            while (inputBool2)                                                              //creating a new while-loop so the user can chose wich account the money should be deposited on.
             {
  
                 try
@@ -443,16 +444,24 @@ namespace Bankomat2._0
         static void Main(string[] args)
         {
             Användare användare1 = new Användare("Olof", "Sandberg", "olsa", 1111);                 //created 5 new users with new bankaccounts.
-            användare1.AnvändarkontonList.Add(new Konton("Privatkonto", 1234m));                    //created new accounts for each user and added them right away to their uniqe Användarkonton-list.
+            användare1.AnvändarkontonList.Add(new Konton("Privatkonto", 1234m));                    //created new accounts for each user and added them right away to their uniqe Användarkonton-list. I'll explain the details in the 
+                                                                                                    //code beneath.
+
+            Användare användare2 = new Användare("Nina", "Lindberg Nilsson", "nili", 2222);         //so in this example I created a new user called användare2. She is created from the class Användare and the values inserted is 
+                                                                                                    //Förnamn, Efternamn, Användarnamn and Pinkod...
 
 
-            Användare användare2 = new Användare("Nina", "Lindberg Nilsson", "nili", 2222);
-            användare2.AnvändarkontonList.Add(new Konton("Privatkonto", 449m));
+            användare2.AnvändarkontonList.Add(new Konton("Privatkonto", 449m));                     //... And here I created two new bankaccounts for Nina. First I called Ninas uniqe AnvändarekontonList by writing
+                                                                                                    //användare2(which is Nina) before calling the list. Then added a new instance from the class Konton, which contains two variables - 
+                                                                                                    //one string called 'kontonamn' and one decimal called 'saldo'. So the 'kontonamn' and 'saldo' for this new object is 
+                                                                                                    // 'Privatkonto' and '449'. 
+
+
             användare2.AnvändarkontonList.Add(new Konton("Sparkonto", 245670.45m));
 
             Användare användare3 = new Användare("Anna", "Svensson", "ansv", 3333);
             användare3.AnvändarkontonList.Add(new Konton("Privatkonto", 1233m));
-            användare3.AnvändarkontonList.Add(new Konton("Sparkonto", 240955m));
+            användare3.AnvändarkontonList.Add(new Konton("Sparkonto", 240955m));                      //Proceeded to add new objects (new bankaccount) for each user (användare).
             användare3.AnvändarkontonList.Add(new Konton("Pensionskonto", 191000m));
 
             Användare användare4 = new Användare("Lena", "Bengtsson", "lebe", 4444);
@@ -468,14 +477,16 @@ namespace Bankomat2._0
             användare5.AnvändarkontonList.Add(new Konton("Nöjeskonto", 420m));
             användare5.AnvändarkontonList.Add(new Konton("Resekonto", 6700m));
 
-            Dictionary<string, Användare> kundregisterDictionary = new Dictionary<string, Användare>();             //created a new dictionary for my users with string as a key-type and 
-            kundregisterDictionary.Add(användare1.Användarnamn, användare1);                                        //Användare is the data type for the values in my dictionary.
+            Dictionary<string, Användare> kundregisterDictionary = new Dictionary<string, Användare>();             //created a new dictionary for my users with string as a Key and Användare as Value.
+                                                                                                                    //The key means that If i want to retrieve something in my dictionary, I have to call a string.
+                                                                                                                    //And the things I call is the variables in my Användare-class.
+            kundregisterDictionary.Add(användare1.Användarnamn, användare1);                                        
             kundregisterDictionary.Add(användare2.Användarnamn, användare2);
             kundregisterDictionary.Add(användare3.Användarnamn, användare3);
-            kundregisterDictionary.Add(användare4.Användarnamn, användare4);                                        //I added the users to the dictionary, with "användarnamn" as a key for
-            kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //accessing the properties for the uniqe användare (in this case användare4).
-
-
+            kundregisterDictionary.Add(användare4.Användarnamn, användare4);                                        //I added the users to the dictionary, with the string 'Användarnamn' as a key.
+            kundregisterDictionary.Add(användare5.Användarnamn, användare5);                                        //So easily explaned - I add the user (in this case användare5) and then defines the key
+                                                                                                                    //which I want to be Användarnamn. And last get the instances for for the specific user behind the 
+                                                                                                                    //comma, which in this case of course is the properties of användare5.
 
 
             bool körProgram = true;
@@ -509,7 +520,7 @@ namespace Bankomat2._0
                             break;
                         case '5':
                             Console.WriteLine("Tack för ditt besök, du loggas nu ut");
-                            Console.ReadKey();
+                            Console.ReadKey();                                                     //If the user chose "Logga ut" the inloggad-bool will be set to false, and you come back to the login menu.
                             Console.Clear();
                             inloggad = false;
                             break;
